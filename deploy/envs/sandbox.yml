@@ -1,0 +1,30 @@
+version: '3.1'
+services:
+
+  app_proposta:
+    image: ${DCK_HOST}/${IMAGE_NAME}:${IMAGE_TAG}
+    environment:
+      - API_DS_ACESSO_URL=https://lpsms.lojaspompeia.com.br/DsHomolog/Login/DSAcesso.dll/datasnap/rest/TSMAcesso
+      - API_DS_ACESSO_USER=pompeia
+      - API_DS_ACESSO_PASS=lfcl
+      - EMPRESA=POMPEIA
+
+    networks:
+     - default
+     - proxy-apps
+    deploy:
+      labels:
+       - "traefik.port=80"
+       - "traefik.docker.network=proxy-apps"
+       - "traefik.frontend.rule=PathPrefix:/app_proposta"
+       - "traefik.backend=app_proposta"
+    volumes:
+      - statics:/static
+
+networks:
+  proxy-apps:
+    external: true
+
+volumes:
+  statics:
+    driver: local
